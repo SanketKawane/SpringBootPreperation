@@ -1,9 +1,19 @@
 package com.Project.SpringBootPreperation.entity;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @JsonPropertyOrder({"id","name","email"})
+@Entity
+@Table(name = "user_info")
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserEntry {
+    @Id
     private long id;
     private String name;
     private String email;

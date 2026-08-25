@@ -1,6 +1,8 @@
 package com.Project.SpringBootPreperation.controller;
 
 import com.Project.SpringBootPreperation.entity.UserEntry;
+import com.Project.SpringBootPreperation.repository.UserRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -11,18 +13,38 @@ import java.util.Map;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    private Map<Long,UserEntry> userEntries=new HashMap<>();
+    @Autowired
+    private UserRepo userRepo;
+
     @GetMapping
     public List<UserEntry> getAll(){
-        return new ArrayList<>(userEntries.values());
+        return userRepo.findAll();
     }
     @PostMapping
-    public boolean putData(@RequestBody UserEntry userEntry){
-        userEntries.put(userEntry.getId(),userEntry);
-        return true;
+    public UserEntry putData(@RequestBody UserEntry userEntry){
+     return userRepo.save(userEntry);
+
     }
     @GetMapping("id/{Id}")
     public UserEntry getById(@PathVariable Long Id){
-        return userEntries.get(Id);
+        return userRepo.findById(Id).orElse(null);
+    }
+    @PutMapping("id/{Id}")
+    public UserEntry updateUser(@PathVariable Long Id,@RequestBody UserEntry userEntry){
+        UserEntry existUser=userRepo.findById(Id).orElse(null);
+        if (existUser==null){
+            return null;
+        }
+        existUser.setName(userEntry.getName());
+        existUser.setEmail(userEntry.getName());
+        return userRepo.save(existUser);
+    }
+    @DeleteMapping("id/{Id}")
+    public String deleteById(@PathVariable Long Id){
+        if(!userRepo.existsById(Id)){
+            return "User Not Found";
+        }
+        userRepo.deleteById(Id);
+        return "User Deleted";
     }
 }
