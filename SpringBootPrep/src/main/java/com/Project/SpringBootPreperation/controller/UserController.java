@@ -1,6 +1,7 @@
 package com.Project.SpringBootPreperation.controller;
 
 import com.Project.SpringBootPreperation.entity.UserEntry;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -24,5 +25,14 @@ public class UserController {
     @GetMapping("id/{Id}")
     public UserEntry getById(@PathVariable Long Id){
         return userEntries.get(Id);
+    }
+    @GetMapping("/profile")
+    public Map<String, String> getProfile(
+            Authentication authentication) {
+
+        return Map.of(
+                "message", "You accessed a protected API",
+                "email", authentication.getName()
+        );
     }
 }
